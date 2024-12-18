@@ -176,10 +176,11 @@ nav img {
 .violet_button {
     background-color: #764FAF;
     color: #F5F5F5;
-    font-size:0.9vmax;
+    font-size:0.8vmax;
     border-radius: 0.25vmax;
     height:35%;
     font-family:'O';
+    border: none;
 }
 .navigation {
     display:flex;
@@ -191,4 +192,40 @@ nav img {
 }
 .current_page {
     color: #764FAF;
+}
+.user_name {
+    font-size: 0.9vmax;
+    font-family:'Inter';
+    justify-self: end;
+}
+.sfs {
+    height: 5vmax;
+    align-items:center;
+    display: grid;
+    grid-template-columns: 1.5% 45% 2% 20% 2% 20% 2% 1fr 1.5%;
+    grid-template-rows: 100%;
+}
+.sfs > select, .sfs > input {
+    height: 30%;
+    
+    font-size:0.8vmax;
+    border-radius: 0.25vmax;
+    outline:none;
+}
+.sfs > select {
+    padding-left: 3%;
+    border: 0.1vmax solid #E3C6FF;
+    color: rgba(0, 0, 0, 0.5);
+}
+.sfs > input[type=text] {
+    padding-left: 2%;
+    color: rgba(0, 0, 0, 0.5);
+    border: 0.1vmax solid #E3C6FF;
+}
+.track_line {
+    height:2vmax;
+    display:grid;
+    width:;
+    grid-template-rows: 100%;
+    grid-template-columns: 100%;
 }

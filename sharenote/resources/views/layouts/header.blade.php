@@ -19,6 +19,7 @@
         <div>Настройки</div>
     </div>
     <button class="c8 r1 violet_button">ВЫХОД</button>
+    <div class="c4 r1 user_name">Puppy</div>
 </nav>
 
 @yield('content')
