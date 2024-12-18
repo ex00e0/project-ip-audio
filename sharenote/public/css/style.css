@@ -105,6 +105,9 @@ body {
 .c2-4 {
     grid-column:2/4;
 }
+.c4-7 {
+    grid-column:4/7;
+}
 
 
 .r1-all {
@@ -190,6 +193,10 @@ nav img {
     font-size: 0.9vmax;
     font-family:'Inter';
 }
+.reg {
+    justify-self: end;
+    width:10%;
+}
 .current_page {
     color: #764FAF;
 }
@@ -225,7 +232,10 @@ nav img {
 .track_line {
     height:2vmax;
     display:grid;
-    width:;
+    width:80%;
     grid-template-rows: 100%;
     grid-template-columns: 100%;
+}
+.void {
+    height: 2vmax;
 }

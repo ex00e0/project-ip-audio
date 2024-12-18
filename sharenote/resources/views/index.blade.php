@@ -16,5 +16,6 @@
 <div class="track_line">
     <div></div>
 </div>
+{{$data->foo()->audio();}}
 
 @endsection

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AllController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
+Route::get('/', [AllController::class, 'index'])->name('/');
+Route::get('/login', [AllController::class, 'show_login'])->name('show_login');
+Route::post('/login', [AllController::class, 'login'])->name('login');
+Route::get('/reg', [AllController::class, 'show_reg'])->name('show_reg');
+Route::post('/reg', [AllController::class, 'reg'])->name('reg');
+Route::get('/exit', [AllController::class, 'exit'])->name('exit');
+
+Route::get('/player', function () {
+    return view('player');
 });
