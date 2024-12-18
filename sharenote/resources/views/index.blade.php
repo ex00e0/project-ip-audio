@@ -13,6 +13,8 @@
     <input type="submit" value="ИСКАТЬ" class="c8 r1 violet_button">
 </form>
 
-<div class="track_line"></div>
+<div class="track_line">
+    <div></div>
+</div>
 
 @endsection
