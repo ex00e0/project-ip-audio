@@ -51,4 +51,5 @@
     <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}">
 </div> -->
 
+
 @endsection

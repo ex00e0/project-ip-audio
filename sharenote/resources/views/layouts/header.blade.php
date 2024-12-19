@@ -19,8 +19,15 @@
         @auth
         <div class="current_page">Моя музыка</div>
         <div><a href="{{route('lk')}}" style="text-decoration: none; color: inherit;">Личный кабинет</a></div>
+        @if (Auth::user()->role == 'admin')
+        <div><a href="" style="text-decoration: none; color: inherit;">Панель администратора</a></div>
+        @elseif ( Auth::user()->role == 'performer')
+        <div><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
+        @endif
+       
         @endauth
-        <div>Исполнители</div>
+        
+        
         <!-- <div>Настройки</div> -->
     </div>
     @auth
@@ -34,6 +41,18 @@
 </nav>
 
 @yield('content')
-
+<div id="empty_px"></div>
+<footer>
+    <div class="copyright c2 r1">© ООО “ShareNote”, 2024 </div>
+    <img src="{{asset('images/logo.svg')}}" class="c3 r1">
+    <div class="logo_text_footer c4 r1"><span style="color:black;">Share</span><span style="color:#764FAF;">Note</span></div>
+</footer>
+<script>
+    // alert();
+    if (document.body.scrollHeight < document.documentElement.clientHeight) {
+        let diff = document.documentElement.clientHeight - document.body.scrollHeight;
+        document.getElementById('empty_px').style.height = `${diff}px`;
+    }
+</script>
 </body>
 </html>

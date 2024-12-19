@@ -47,7 +47,7 @@
     <label for="exampleInputPassword1" class="form-label">Новый пароль</label>
     <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Введите новый пароль">
   </div>
-  <button type="submit" class="btn btn-primary" style="background-color:#764FAF;">Отправить</button>
+  <button type="submit" class="btn btn-primary" style="background-color:#764FAF; border:none;">Отправить</button>
 </form>
 </div>
 

@@ -22,8 +22,15 @@ Route::post('/reg', [AllController::class, 'reg'])->name('reg');
 Route::get('/exit', [AllController::class, 'exit'])->name('exit');
 Route::get('/lk', [AllController::class, 'show_lk'])->name('show_lk');
 Route::post('/lk', [AllController::class, 'lk'])->name('lk');
-
 Route::get('/sfs', [AllController::class, 'sfs'])->name('sfs');
+
+Route::get('/performer_panel', [AllController::class, 'performer_panel'])->name('performer_panel');
+Route::get('/sfs_performer_panel', [AllController::class, 'sfs_performer_panel'])->name('sfs_performer_panel');
+Route::get('/edit_track/{id}', [AllController::class, 'edit_track'])->name('edit_track');
+Route::post('/edit_track_db', [AllController::class, 'edit_track_db'])->name('edit_track_db');
+Route::get('/create_track', [AllController::class, 'create_track'])->name('create_track');
+Route::post('/create_track_db', [AllController::class, 'create_track_db'])->name('create_track_db');
+Route::get('/delete_track/{id}', [AllController::class, 'delete_track'])->name('delete_track');
 
 Route::get('/player', function () {
     return view('player');

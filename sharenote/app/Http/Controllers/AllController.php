@@ -188,4 +188,112 @@ class AllController extends Controller
     }
         
     }
+
+    public function performer_panel () {
+        $data =  ['data'=>DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get(),
+        'count' => DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get()->count()];
+        return view('performer_panel', $data);
+    }
+
+    public function sfs_performer_panel (Request $request) {
+        $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id());
+        if ($request->search != null && $request->search != '') {
+           $data = $data->where('tracks.name', 'LIKE', '%'.$request->search.'%');
+        }
+        if ($request->sort != null && $request->sort != '') {
+            $data = $data->orderBy('created_at', $request->sort);
+        }
+        $data = $data->latest()->get();
+        $data = ['data'=>$data, 'count'=> $data->count()];
+        return view('performer_panel', $data);
+    }
+
+    public function edit_track (Track $id) {
+        $data =  ['data'=>$id];
+        return view('edit_track', $data);
+    }
+
+    public function create_track () {
+        return view('create_track');
+    }
+
+    public function create_track_db (Request $request) {
+        // dd();
+        $validator = Validator::make($request->all(), [
+            "name"=>["required", "max:70"],
+            "file_x"=>["required"],
+        ],
+        $messages = [
+            'name.required' => 'Не введено имя',
+            'name.max' => 'Максимальная длина названия - 70 символов',
+            'file_x.required' => 'Не отправлен файл аудиозаписи',
+        ]
+    );
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator);
+    }
+    else {
+        if ($request->file_x->getClientOriginalExtension() == 'mp3') {
+
+            $extention = $request->file('file_x')->getClientOriginalName();
+            $request->file('file_x')->move(public_path() . '/audio', $extention);
+
+            $track = Track::create(['name'=>$request->name,
+                            'file'=>$extention,
+                            'performer_id'=>Auth::id()]);
+            return redirect()->route('performer_panel')->withErrors(['message' => 'Трек добавлен']);
+        }
+        else {
+            return redirect()->back()->withErrors(['file_x' => 'Невереный формат файла аудиозаписи']);
+        }
+        
+        
+        
+    }
+
+    }
+
+    public function edit_track_db (Request $request) {
+        // dd();
+        $validator = Validator::make($request->all(), [
+            "name"=>["required", "max:70"],
+        ],
+        $messages = [
+            'name.required' => 'Не введено имя',
+            'name.max' => 'Максимальная длина названия - 70 символов',
+        ]
+    );
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator);
+    }
+    else {
+        if ($request->file('file_x') != null) {
+        if ($request->file_x->getClientOriginalExtension() == 'mp3') {
+
+            $extention = $request->file('file_x')->getClientOriginalName();
+            $request->file('file_x')->move(public_path() . '/audio', $extention);
+
+            $track = Track::where('id', $request->id)->update(['name'=>$request->name,
+                            'file'=>$extention]);
+            return redirect()->route('performer_panel')->withErrors(['message' => 'Информация о треке обновлена']);
+        }
+        else {
+            return redirect()->back()->withErrors(['file_x' => 'Невереный формат файла аудиозаписи']);
+        }
+    }
+    else {
+        $track = Track::where('id', $request->id)->update(['name'=>$request->name,]);
+        return redirect()->route('performer_panel')->withErrors(['message' => 'Информация о треке обновлена']);
+    }    
+        
+    }
+
+    }
+
+    public function delete_track (Track $id) {
+        $id->delete();
+        return redirect()->back()->withErrors(['message' => 'Аудиозапись удалена']);
+    }
 }

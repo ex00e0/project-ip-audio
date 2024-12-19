@@ -38,7 +38,7 @@
         <option value="performer">исполнитель</option>
     </select>
   </div>
-  <button type="submit" class="btn btn-primary" style="background-color:#764FAF;">Отправить</button>
+  <button type="submit" class="btn btn-primary" style="background-color:#764FAF; border:none;">Отправить</button>
 </form>
 </div>
 
