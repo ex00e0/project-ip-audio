@@ -20,6 +20,10 @@ Route::post('/login', [AllController::class, 'login'])->name('login');
 Route::get('/reg', [AllController::class, 'show_reg'])->name('show_reg');
 Route::post('/reg', [AllController::class, 'reg'])->name('reg');
 Route::get('/exit', [AllController::class, 'exit'])->name('exit');
+Route::get('/lk', [AllController::class, 'show_lk'])->name('show_lk');
+Route::post('/lk', [AllController::class, 'lk'])->name('lk');
+
+Route::get('/sfs', [AllController::class, 'sfs'])->name('sfs');
 
 Route::get('/player', function () {
     return view('player');
