@@ -14,15 +14,28 @@
     <img src="{{asset('images/logo.svg')}}" class="c2 r1">
     <div class="logo_text c4 r1"><span style="color:black;">Share</span><span style="color:#764FAF;">Note</span></div>
     <div class="c1-all r1 navigation">
+        @if (Route::current()->getName() == 'sfs' || Route::current()->getName() == '/' || Route::current()->getName() == 'paginate')
+        <div class="current_page"><a href="{{route('/')}}" style="text-decoration: none; color: inherit;">Главная</a></div>
+        @else 
         <div><a href="{{route('/')}}" style="text-decoration: none; color: inherit;">Главная</a></div>
+        @endif
         <div>Популярное</div>
+        
         @auth
-        <div class="current_page">Моя музыка</div>
+        <div>Моя музыка</div>
+        @if (Route::current()->getName() == 'show_lk')
+        <div class="current_page"><a href="{{route('lk')}}" style="text-decoration: none; color: inherit;">Личный кабинет</a></div>
+        @else 
         <div><a href="{{route('lk')}}" style="text-decoration: none; color: inherit;">Личный кабинет</a></div>
+        @endif
         @if (Auth::user()->role == 'admin')
         <div><a href="" style="text-decoration: none; color: inherit;">Панель администратора</a></div>
         @elseif ( Auth::user()->role == 'performer')
+        @if (Route::current()->getName() == 'performer_panel')
+        <div class="current_page"><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
+        @else
         <div><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
+        @endif
         @endif
        
         @endauth
