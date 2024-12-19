@@ -38,6 +38,7 @@
 @else
 <div class="void_small" style="justify-self:center;">Нет таких треков</div>
 @endif
+<div id="empty_px"></div>
 <!-- 
 <div class="track_line">
     <div class="c1 r1-3 track_img"></div>

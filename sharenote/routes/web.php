@@ -15,6 +15,7 @@ use App\Http\Controllers\AllController;
 */
 
 Route::get('/', [AllController::class, 'index'])->name('/');
+Route::get('/index/{page}', [AllController::class, 'index'])->name('paginate');
 Route::get('/login', [AllController::class, 'show_login'])->name('show_login');
 Route::post('/login', [AllController::class, 'login'])->name('login');
 Route::get('/reg', [AllController::class, 'show_reg'])->name('show_reg');

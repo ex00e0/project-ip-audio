@@ -41,7 +41,7 @@
 </nav>
 
 @yield('content')
-<div id="empty_px"></div>
+
 <footer>
     <div class="copyright c2 r1">© ООО “ShareNote”, 2024 </div>
     <img src="{{asset('images/logo.svg')}}" class="c3 r1">

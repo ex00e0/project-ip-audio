@@ -28,5 +28,5 @@
   <button type="submit" class="btn btn-primary" style="background-color:#764FAF; border:none;">Отправить</button>
 </form>
 </div>
-
+<div id="empty_px"></div>
 @endsection

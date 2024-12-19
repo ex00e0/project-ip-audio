@@ -13,12 +13,28 @@ use Illuminate\Support\Facades\Validator;
 
 class AllController extends Controller
 {
-    public function index () {
-        $data =  ['data'=>DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get(),
-    'performers' => User::where('role', 'performer')->get(), 'count' => DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count()];
+    public function index ($page = null) {
+        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
+        if ($count < 12) {
+            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get();
+        }
+        else {
+            // dd($page);
+            if ($page == null) {
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->take(12)->get();
+            }
+            else {
+                
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
+                // dd($tracks);
+            }
+        }
+        $data =  ['data'=>$tracks,
+    'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
         return view('index', $data);
     }
     public function sfs (Request $request) {
+       
         $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id');
         if ($request->search != null && $request->search != '') {
            $data = $data->where('tracks.name', 'LIKE', '%'.$request->search.'%');
@@ -29,8 +45,23 @@ class AllController extends Controller
         if ($request->sort != null && $request->sort != '') {
             $data = $data->orderBy('created_at', $request->sort);
         }
-        $data = $data->latest()->get();
-        $data = ['data'=>$data, 'performers' => User::where('role', 'performer')->get(), 'count'=> $data->count()];
+        // dd($data);
+        $count = $data->latest()->get()->count();
+        // dd($data);
+        if ($count <= 12) {
+            $data = $data->latest()->get();
+        }
+        else {
+            if ($request->page == null) {
+                $data = $data->latest()->take(12)->get();
+            }
+            else {
+                $data = $data->latest()->skip((intval($request->page)-1)*12)->take(12)->get();
+                // dd($tracks);
+            }
+        }
+        // dd($data);
+        $data = ['data'=>$data, 'performers' => User::where('role', 'performer')->get(), 'count'=> $count, 'page'=> $request->page];
         return view('index', $data);
     }
     public function show_login () {

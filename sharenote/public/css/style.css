@@ -319,3 +319,25 @@ footer img {
     font-size: 0.75vmax;
     font-family:'Inter';
 }
+.pagination_block {
+    height:2vmax;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.5% 1fr 1.5%;
+    grid-template-rows: 100%;
+    align-items: center;
+    font-size: 0.9vmax;
+    font-family:'Inter';
+    justify-items: center;
+}
+.numbers_block {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 100%;
+    align-items: center;
+}
+.numbers_block > div {
+    width:2vmax;
+    justify-items: center;
+    
+}
