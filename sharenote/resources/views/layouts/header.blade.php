@@ -31,7 +31,7 @@
         @if (Auth::user()->role == 'admin')
         <div><a href="" style="text-decoration: none; color: inherit;">Панель администратора</a></div>
         @elseif ( Auth::user()->role == 'performer')
-        @if (Route::current()->getName() == 'performer_panel')
+        @if (Route::current()->getName() == 'performer_panel' || Route::current()->getName() == 'sfs_performer_panel')
         <div class="current_page"><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
         @else
         <div><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
@@ -60,6 +60,7 @@
     <img src="{{asset('images/logo.svg')}}" class="c3 r1">
     <div class="logo_text_footer c4 r1"><span style="color:black;">Share</span><span style="color:#764FAF;">Note</span></div>
 </footer>
+<div id="empty_player" style="display:none; height:3vmax;"></div>
 <script>
     // alert();
     if (document.body.scrollHeight < document.documentElement.clientHeight) {

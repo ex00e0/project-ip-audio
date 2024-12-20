@@ -220,9 +220,23 @@ class AllController extends Controller
         
     }
 
-    public function performer_panel () {
-        $data =  ['data'=>DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get(),
-        'count' => DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get()->count()];
+    public function performer_panel ($page=null) {
+        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get()->count();
+        if ($count <= 10) {
+            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get();
+        }
+        else {
+            // dd($page);
+            if ($page == null) {
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->take(10)->get();
+            }
+            else {
+                
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->skip((intval($page)-1)*10)->take(10)->get();
+                // dd($tracks);
+            }
+        }
+        $data =  ['data'=>$tracks, 'count' => $count, 'page' => $page];
         return view('performer_panel', $data);
     }
 
@@ -234,8 +248,22 @@ class AllController extends Controller
         if ($request->sort != null && $request->sort != '') {
             $data = $data->orderBy('created_at', $request->sort);
         }
-        $data = $data->latest()->get();
-        $data = ['data'=>$data, 'count'=> $data->count()];
+        // dd($data);
+        $count = $data->latest()->get()->count();
+        // dd($data);
+        if ($count <= 10) {
+            $data = $data->latest()->get();
+        }
+        else {
+            if ($request->page == null) {
+                $data = $data->latest()->take(10)->get();
+            }
+            else {
+                $data = $data->latest()->skip((intval($request->page)-1)*10)->take(10)->get();
+                // dd($tracks);
+            }
+        }
+        $data = ['data'=>$data, 'count'=> $count, 'page'=> $request->page];
         return view('performer_panel', $data);
     }
 
@@ -255,7 +283,7 @@ class AllController extends Controller
             "file_x"=>["required"],
         ],
         $messages = [
-            'name.required' => 'Не введено имя',
+            'name.required' => 'Не введено название',
             'name.max' => 'Максимальная длина названия - 70 символов',
             'file_x.required' => 'Не отправлен файл аудиозаписи',
         ]
@@ -276,7 +304,7 @@ class AllController extends Controller
             return redirect()->route('performer_panel')->withErrors(['message' => 'Трек добавлен']);
         }
         else {
-            return redirect()->back()->withErrors(['file_x' => 'Невереный формат файла аудиозаписи']);
+            return redirect()->back()->withErrors(['file_x' => 'Неверный формат файла аудиозаписи']);
         }
         
         
@@ -291,7 +319,7 @@ class AllController extends Controller
             "name"=>["required", "max:70"],
         ],
         $messages = [
-            'name.required' => 'Не введено имя',
+            'name.required' => 'Не введено название',
             'name.max' => 'Максимальная длина названия - 70 символов',
         ]
     );
@@ -311,7 +339,7 @@ class AllController extends Controller
             return redirect()->route('performer_panel')->withErrors(['message' => 'Информация о треке обновлена']);
         }
         else {
-            return redirect()->back()->withErrors(['file_x' => 'Невереный формат файла аудиозаписи']);
+            return redirect()->back()->withErrors(['file_x' => 'Неверный формат файла аудиозаписи']);
         }
     }
     else {

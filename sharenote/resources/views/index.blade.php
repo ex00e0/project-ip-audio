@@ -30,8 +30,8 @@
     <div class="c1 r1-3 track_img"></div>
     <div class="c3 r1 track_name">{{$d->name}}</div>
     <div class="c3 r2 track_performer">{{$d->performer_name}}</div>
-    <div class="c4 r1-3 track_length">00:00</div>
-    <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}">
+    <div class="c4 r1-3 track_length" id="dur_<?=$d->id?>"></div>
+    <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}" onclick="play('<?=$d->file?>', '<?=$d->id?>')">
     <a href="{{asset('audio/'.$d->file)}}" download class="c7 r1-3"><img src="{{asset('images/download 2.svg')}}"></a>
     <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}">
 </div>
@@ -58,7 +58,6 @@
     <div></div>
     <div class="numbers_block">
         @php
-        $string = 
         $amount = ceil($count/12);
         @endphp
         @for ($i=1;$i<=$amount;$i++)
@@ -101,4 +100,37 @@
 <div class="void_small"></div>
 @endif
 
+<div id="audio-player" style="position:fixed; width:100%; display:none;">
+       
+    </div>
+<script>
+    function play (name, id) {
+        // console.log( document.getElementById('play_name'));
+        let audio = document.createElement('audio');
+        audio.setAttribute('controls', '');
+        audio.setAttribute('style', 'width:100%;');
+        audio.setAttribute('id', 'audio');
+        audio.innerHTML = `<source id="play_name" src="{{asset('audio/${name}')}}" type="audio/mpeg">
+            Your browser does not support the audio element.`;
+        document.getElementById('audio-player').innerHTML = '';
+        document.getElementById('audio-player').append(audio);
+
+        // document.getElementById('play_name').setAttribute('type', 'audio/mpeg')
+        // document.getElementById('play_name').setAttribute('src', '../../public/audio/' + name)
+       
+        document.getElementById('audio-player').style.display = 'block';
+        document.getElementById('audio').play();
+        document.getElementById('audio').onloadeddata = function(){console.log(document.getElementById('audio').duration);
+        
+        let min = Math.floor(document.getElementById('audio').duration/60);
+        let sec = Math.floor(document.getElementById('audio').duration % 60);
+        if (sec < 10) {sec = '0'+sec;}
+        if (min < 10) {min = '0'+min;}
+        let dur = min + ':' + sec;
+        document.getElementById(`dur_${id}`).innerHTML = dur;
+        };
+        document.getElementById('empty_player').style.display = 'block';
+       
+    }
+</script>
 @endsection

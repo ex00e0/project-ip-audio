@@ -26,6 +26,7 @@ Route::post('/lk', [AllController::class, 'lk'])->name('lk');
 Route::get('/sfs', [AllController::class, 'sfs'])->name('sfs');
 
 Route::get('/performer_panel', [AllController::class, 'performer_panel'])->name('performer_panel');
+Route::get('/performer_panel/{page}', [AllController::class, 'performer_panel'])->name('paginate_performer_panel');
 Route::get('/sfs_performer_panel', [AllController::class, 'sfs_performer_panel'])->name('sfs_performer_panel');
 Route::get('/edit_track/{id}', [AllController::class, 'edit_track'])->name('edit_track');
 Route::post('/edit_track_db', [AllController::class, 'edit_track_db'])->name('edit_track_db');
