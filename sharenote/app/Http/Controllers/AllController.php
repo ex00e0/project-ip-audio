@@ -137,7 +137,7 @@ class AllController extends Controller
                 return redirect()->route('/');
             }
             else {
-                return redirect()->route('admin');
+                return redirect()->route('admin_panel');
             }
             
         } else {
@@ -354,5 +354,62 @@ class AllController extends Controller
     public function delete_track (Track $id) {
         $id->delete();
         return redirect()->back()->withErrors(['message' => 'Аудиозапись удалена']);
+    }
+
+    public function delete_track_admin (Track $id) {
+        $id->delete();
+        return redirect()->back()->withErrors(['message' => 'Аудиозапись удалена']);
+    }
+
+
+    public function admin_panel ($page=null) {
+        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
+        if ($count <= 10) {
+            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get();
+        }
+        else {
+            // dd($page);
+            if ($page == null) {
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->take(10)->get();
+            }
+            else {
+                
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->skip((intval($page)-1)*10)->take(10)->get();
+                // dd($tracks);
+            }
+        }
+        $data =  ['data'=>$tracks, 'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
+        return view('admin_panel', $data);
+    }
+
+    public function sfs_admin_panel (Request $request) {
+        $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id');
+        if ($request->search != null && $request->search != '') {
+           $data = $data->where('tracks.name', 'LIKE', '%'.$request->search.'%');
+        }
+        if ($request->filter != null && $request->filter != '') {
+            $data = $data->where('tracks.performer_id', '=', $request->filter);
+        }
+        if ($request->sort != null && $request->sort != '') {
+            $data = $data->orderBy('created_at', $request->sort);
+        }
+
+        // dd($data);
+        $count = $data->latest()->get()->count();
+        // dd($data);
+        if ($count <= 10) {
+            $data = $data->latest()->get();
+        }
+        else {
+            if ($request->page == null) {
+                $data = $data->latest()->take(10)->get();
+            }
+            else {
+                $data = $data->latest()->skip((intval($request->page)-1)*10)->take(10)->get();
+                // dd($tracks);
+            }
+        }
+        $data = ['data'=>$data, 'performers' => User::where('role', 'performer')->get(), 'count'=> $count, 'page'=> $request->page];
+        return view('admin_panel', $data);
     }
 }
