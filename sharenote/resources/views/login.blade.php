@@ -2,6 +2,10 @@
 @section('title', 'Моя музыка')
 @section('content')
 
+@error('message')
+    <div class="alert alert-success">{{ $message }}</div>
+@enderror
+
 @error('email')
     <div class="alert alert-danger">{{ $message }}</div>
 @enderror
@@ -25,6 +29,10 @@
     <label for="exampleInputPassword1" class="form-label">Пароль</label>
     <input type="password" class="form-control" id="exampleInputPassword1" name="password">
   </div>
+  <div class="mb-3">
+  <label for="exampleInputPassword1" class="form-label"><a href="{{route('forget_pass')}}" style="color:#764FAF">Забыли пароль?</a></label>
+  </div>
+
   <button type="submit" class="btn btn-primary" style="background-color:#764FAF; border:none;">Отправить</button>
 </form>
 </div>

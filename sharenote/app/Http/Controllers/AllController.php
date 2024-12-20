@@ -412,4 +412,72 @@ class AllController extends Controller
         $data = ['data'=>$data, 'performers' => User::where('role', 'performer')->get(), 'count'=> $count, 'page'=> $request->page];
         return view('admin_panel', $data);
     }
+
+    public function forget_pass () {
+        return view('forget_pass');
+    }
+
+    public function forget_pass_db (Request $request) {
+        $validator = Validator::make($request->all(), [
+            "email"=>["required", "email"],
+        ],
+        $messages = [
+            'email.required' => 'Не введена электронная почта',
+            'email.email' => 'Неверный формат почты',
+        ]
+    );
+    if ($validator->fails()) {
+        return redirect()->route('forget_pass')->withErrors($validator);
+    }
+    else {
+
+        $user = User::where('email', $request->email)->exists();
+        if ($user != false) {
+            $alphas = range('a', 'z');
+            $alphas2 = range('A', 'Z');
+            $new_pass = '';
+            for ($j=0;$j<8;$j++) {
+                $w = rand(0,2);
+                if ($w == 0) {
+                    $new_pass .= $alphas[rand(0,25)];
+                }
+                else if ($w == 1) {
+                    $new_pass .= $alphas2[rand(0,25)];
+                }
+                else if ($w == 2) {
+                    $new_pass .= strval(rand(0,9));
+
+                }
+            }
+            if (mail(
+                $request->email,
+                'Восстановление пароля',
+                "<html>
+                 <body>
+                <div>
+                        <div>Ваш новый пароль - $new_pass</div>
+                    </div>
+                    <br>
+    
+                </body></html>",
+                "From: ivan@example.com\r\n"
+                ."Content-type: text/html; charset=utf-8\r\n"
+                ."X-Mailer: PHP mail script"
+            )) {
+            User::where('email', $request->email)->update([
+                'password' => Hash::make($new_pass),
+            ]);
+        return redirect()->route('login')->withErrors(['message' => 'Письмо с паролем отправлено на почту. Авторизуйтесь с новыми данными']);
+               
+            }
+        else {
+        return redirect()->back()->withErrors(['message' => 'Ошибка отправки письма']);
+
+        }
+    }
+    else {
+        return redirect()->route('forget_pass')->withErrors(['email' => 'Такого пользователя нет']);
+    }
+}
+    }
 }

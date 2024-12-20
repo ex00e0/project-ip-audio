@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 20 2024 г., 00:23
+-- Время создания: Дек 20 2024 г., 14:17
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -84,8 +84,6 @@ INSERT INTO `tracks` (`id`, `name`, `performer_id`, `file`, `created_at`, `updat
 (1, 'calm', 3, 'Calm_music_-_Zeon_73851765.mp3', '2024-12-19 08:23:21', NULL),
 (2, 'track000', 5, 'Meditation_Best_Relaxing_Spa_Music_Legends_Of_The_Drum_-_Wind_Spirits_48069509.mp3', '2024-12-20 08:23:21', '2024-12-19 13:38:38'),
 (3, 'track1', 5, 'Calm_music_-_Zeon_73851765.mp3', '2024-12-18 08:23:21', NULL),
-(4, 'track2', 5, 'Calm_music_-_Zeon_73851765.mp3', '2024-12-15 08:23:21', NULL),
-(6, 'namename', 5, 'Calm_music_-_Zeon_73851765.mp3', '2024-12-19 13:25:36', '2024-12-19 13:25:36'),
 (7, 'meditation', 5, 'Meditation_Best_Relaxing_Spa_Music_Legends_Of_The_Drum_-_Wind_Spirits_48069509.mp3', '2024-12-19 13:28:28', '2024-12-19 13:28:28'),
 (8, 'track001', 5, 'Uspokaivayushhaya_muzyka_-_SHum_vody_56569717.mp3', '2024-12-19 13:52:47', '2024-12-19 13:52:47'),
 (9, 'track002', 5, 'Uspokaivayushhaya_muzyka_-_SHum_vody_56569717.mp3', '2024-12-19 15:09:24', '2024-12-19 15:09:24'),
@@ -121,7 +119,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`, `u
 (2, 'ivanivan8', 'ivanivan8@mail.ru', '$2y$10$BLtfctJCwrlwtsVQzR0zyegqnCPC3hmbK78Pu50dYxkJmNyiryewi', 'listener', '2024-12-18 12:47:59', '2024-12-19 06:02:29'),
 (3, 'ivanivan2', 'ivan2@mail.ru', '$2y$10$XSnLyvNMJF/vw56XJvVsOeROLu4LI7LeR472qGzPMShPQsruYKwAq', 'performer', '2024-12-18 12:51:02', '2024-12-18 12:51:02'),
 (4, 'puppy', 'puppy@puppy.puppy', '$2y$10$e6vrXetxgmTnzA2zC18aW.7EdD8Oh6BSr48MXkaaYdrkNinmn1alu', 'admin', '2024-12-19 08:23:21', '2024-12-19 08:23:21'),
-(5, 'performer0', 'performer0@performer0.ru', '$2y$10$dVfF0isT2NmAmkPKx6hCOeDEE3E3NPInrD66hyt1rPkSDBFy2Kbka', 'performer', '2024-12-19 08:28:01', '2024-12-19 08:28:01'),
+(5, 'performer0', 'x-x-x-x-2000-x-x@mail.ru', '$2y$10$.p/9W1rAi9wBA3bFN6mHyOYxwMGcBE0wfKFBom4XLV3dgQ/LoDOU.', 'performer', '2024-12-19 08:28:01', '2024-12-20 08:12:46'),
 (6, 'performer01', 'performer01@performer01.ru', '$2y$10$VVUk/bPrjgAjVO7LBAyyxel/IbYm4tPMoyT3dfDRZJFgTIz9HYzRK', 'performer', '2024-12-19 08:28:58', '2024-12-19 08:28:58'),
 (7, 'listener0', 'listener0@listener0.ru', '$2y$10$XjJcaTaIqlOQWUNLi6jcreGVxbfWUoQey4.a7F5fstwC8lobVW6Eu', 'listener', '2024-12-19 08:31:15', '2024-12-19 08:31:15'),
 (8, 'listener01', 'listener01@listener01.ru', '$2y$10$Srqmh08UF8m2khki0MueF.eth/cenbeteNfTUiWlOOAUH3Ni3Tcmi', 'listener', '2024-12-19 08:41:49', '2024-12-19 08:41:49'),

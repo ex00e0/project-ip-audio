@@ -24,6 +24,9 @@ Route::get('/exit', [AllController::class, 'exit'])->name('exit');
 Route::get('/lk', [AllController::class, 'show_lk'])->name('show_lk');
 Route::post('/lk', [AllController::class, 'lk'])->name('lk');
 Route::get('/sfs', [AllController::class, 'sfs'])->name('sfs');
+Route::get('/forget_pass', [AllController::class, 'forget_pass'])->name('forget_pass');
+Route::post('/forget_pass_db', [AllController::class, 'forget_pass_db'])->name('forget_pass_db');
+
 
 Route::group(['middleware' => ['auth', 'CheckIsPerformer']], function()
 {
