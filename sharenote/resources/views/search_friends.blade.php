@@ -8,9 +8,9 @@
 @enderror
 <div class="void"></div>
 <div class="create_row">
-    <button class="c2 r1 violet_button create_button"><a href="{{route('search_friends')}}" style="text-decoration: none; color: white;">НАЙТИ ДРУЗЕЙ</a></button>
+    <button class="c2 r1 violet_button create_button"><a href="{{route('friends')}}" style="text-decoration: none; color: white;">НАЗАД</a></button>
 </div>
-<form class="sfs" action="{{route('sfs_friends')}}" method="get" id="sfs">
+<form class="sfs" action="{{route('sfs_search_friends')}}" method="get" id="sfs">
     <input name="search" type="text" placeholder="Введите имя.." class="c2-7 r1" value="<?=(!isset($_GET['search']) || $_GET['search'] == '')?'':$_GET['search']?>">
 
     <input type="hidden" value="<?=($count > 10 ? $page : null)?>" name="page" id="page_move">
@@ -32,7 +32,7 @@
 @endforeach
 
 @else
-<div class="void_small" style="justify-self:center;">Нет друзей</div>
+<div class="void_small" style="justify-self:center;">Нет пользователей по такому запросу</div>
 @endif
 <div id="empty_px"></div>
 

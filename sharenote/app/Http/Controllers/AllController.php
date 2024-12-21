@@ -662,4 +662,17 @@ class AllController extends Controller
         ]);
         return redirect()->back()->withErrors(['message' => 'Пользователь удален из ваших друзей']);
     }
+
+    public function search_friends ($page=null) {
+        $users = User::get();
+        $friends = null;
+        $count = 0;
+        $data =  ['friends'=>$friends, 'users' => $users, 'count' => $count, 'page' => $page];
+        return view('search_friends', $data);
+    }
+
+    public function sfs_search_friends () {
+        // $users = User::get();
+        return view('search_friends');
+    }
 }

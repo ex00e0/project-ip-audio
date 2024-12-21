@@ -51,11 +51,12 @@
     @endif
     @endforeach
   @endif
-    
+  @endif
 
-    @endif
+    
     <div class="r2 c1 message" id="message">
     <div class="void"></div>
+    @if ($friends != null) 
     @php
      $count_mess = 0;
      @endphp
@@ -104,6 +105,9 @@
     @endif
 
     @endif
+    @else 
+    <div class="void" style="justify-self:center;">Нет друзей</div>
+    @endif
       <!-- <div class="from">mess1</div>
       <div class="void"></div>
       <div class="to">mess2mess2mess2mess2mess2mess2mess2mess2mess2mess 2mess2mess2mess2mess2mess2mess2mess2mess2mess2mess2mess2</div>
@@ -123,12 +127,14 @@
     </div>
   
   </div>
+  @if ($friends != null)
   <form class="send_mess c3 r2" action="{{route('send_message')}}" method="post">
     @csrf
       <input type="text" class="form-control c1 r1" name="text">
       <input type="hidden" value="{{$to}}" name="to">
       <button type="submit" class="btn btn-primary c3 r1" style="background-color:#764FAF; border:none;">Отправить</button>
   </form>
+  @endif
   <label for="exampleInputPassword1" class="form-label c2 r2" style="align-self:center;"><a href="{{route('friends')}}" style="color:#764FAF">Управление списком друзей</a></label>
 </div>
 <div class="void"></div>
