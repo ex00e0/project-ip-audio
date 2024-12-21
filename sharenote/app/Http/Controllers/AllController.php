@@ -718,7 +718,7 @@ class AllController extends Controller
     }
 
     public function search_friends ($page=null) {
-        $users = User::get();
+        $users = User::where('id', '!=', Auth::id())->get();
         $friends = null;
         $count = 0;
         $data =  ['friends'=>$friends, 'users' => $users, 'count' => $count, 'page' => $page];
@@ -727,11 +727,11 @@ class AllController extends Controller
 
     public function sfs_search_friends (Request $request) {
         if ($request->search != null && $request->search != '') {
-           $users = User::where('users.name', 'LIKE', '%'.$request->search.'%')->get();
+           $users = User::where('id', '!=', Auth::id())->where('users.name', 'LIKE', '%'.$request->search.'%')->get();
            $count = $users->count();
         }
         else {
-            $users = User::get();
+            $users = User::where('id', '!=', Auth::id())->get();
             $count = $users->count();
         }
         $friends = User::where('id',  Auth::id())->get();
