@@ -40,6 +40,7 @@ Route::get('/friends', [AllController::class, 'friends'])->name('friends');
 Route::get('/friends/{page}', [AllController::class, 'friends'])->name('paginate_friends');
 Route::get('/sfs_friends', [AllController::class, 'sfs_friends'])->name('sfs_friends');
 Route::get('/delete_friend/{id}', [AllController::class, 'delete_friend'])->name('delete_friend');
+Route::get('/add_friend/{id}', [AllController::class, 'add_friend'])->name('add_friend');
 Route::get('/search_friends', [AllController::class, 'search_friends'])->name('search_friends');
 Route::get('/sfs_search_friends', [AllController::class, 'sfs_search_friends'])->name('sfs_search_friends');
 

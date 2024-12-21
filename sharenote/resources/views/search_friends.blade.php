@@ -17,18 +17,27 @@
     <input type="submit" value="ИСКАТЬ" class="c8 r1 violet_button">
 </form>
 
-@if ($friends != null) 
-@foreach ($friends as $f)
+@if ($count != 0)
 @foreach ($users as $d) 
-@if ($f == $d->id)
+@php
+$check = 0;
+@endphp
 <div class="track_line">
     <div class="c1 r1-3 track_img"></div>
     <div class="c3 r1-3 track_name">{{$d->name}}</div>
+    @foreach ($friends as $f)
+    @if ($f == $d->id)
+    @php
+    $check = 1;
+    @endphp
     <a href="{{route('delete_friend', $d->id)}}" class="c9 r1-3"><img src="{{asset('images/bin 1.svg')}}"></a>
+    @endif
+    @endforeach
+    @if ($check == 0)
+    <a href="{{route('add_friend', $d->id)}}" class="c9 r1-3"><img src="{{asset('images/Group 15.svg')}}"></a>
+    @endif
 </div>
 <div class="void_small"></div>
-@endif
-@endforeach
 @endforeach
 
 @else

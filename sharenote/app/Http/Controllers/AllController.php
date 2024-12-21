@@ -640,6 +640,39 @@ class AllController extends Controller
         return view('friends', $data);
     }
 
+    public function sfs_friends (Request $request) {
+        if ($request->search != null && $request->search != '') {
+            $users = User::where('users.name', 'LIKE', '%'.$request->search.'%')->get();
+         }
+         else {
+             $users = User::get();
+         }
+
+         $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        if ($friends != null) {
+            $friends = $friends->id;
+            $count = count($friends);
+        if ($count > 10) {
+            if ($request->page == null) {
+                $friends = array_slice($friends, 0, 10);
+            }
+            else {
+                $friends = array_slice($friends, (intval($request->page)-1)*10, 10);
+
+            }
+        }
+        }
+        else {
+            $count = 0;
+        }
+        // $friends = get_object_vars($friends);
+        
+        
+        $data =  ['friends'=>$friends, 'users' => $users, 'count' => $count, 'page' => $request->page];
+        return view('friends', $data);
+    }
+
     public function delete_friend ($id) {
         $friends = User::where('id',  Auth::id())->get();
         $friends = json_decode($friends[0]->friends);
@@ -663,6 +696,27 @@ class AllController extends Controller
         return redirect()->back()->withErrors(['message' => 'Пользователь удален из ваших друзей']);
     }
 
+    public function add_friend ($id) {
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        $friends = $friends->id;
+        // $friends = get_object_vars($friends);
+       
+        array_push($friends,intval($id));
+        
+        if ($friends == []) {
+            $friends = null;
+        } else {
+            $friends = ['id' => array_values($friends)];
+            $friends = json_encode($friends);
+        }
+        // dd($friends);
+        User::where('id', Auth::id())->update([
+            'friends' => $friends,
+        ]);
+        return redirect()->back()->withErrors(['message' => 'Пользователь добавлен к вашим друзьям']);
+    }
+
     public function search_friends ($page=null) {
         $users = User::get();
         $friends = null;
@@ -671,8 +725,23 @@ class AllController extends Controller
         return view('search_friends', $data);
     }
 
-    public function sfs_search_friends () {
-        // $users = User::get();
-        return view('search_friends');
+    public function sfs_search_friends (Request $request) {
+        if ($request->search != null && $request->search != '') {
+           $users = User::where('users.name', 'LIKE', '%'.$request->search.'%')->get();
+           $count = $users->count();
+        }
+        else {
+            $users = User::get();
+            $count = $users->count();
+        }
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        if ($friends != null) {
+            $friends = $friends->id;
+        }
+        $data =  ['friends'=>$friends, 'users' => $users, 'count' => $count, 'page' => $request->page];
+        return view('search_friends', $data);
     }
+
+
 }

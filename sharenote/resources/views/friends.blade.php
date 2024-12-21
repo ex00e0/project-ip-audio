@@ -81,5 +81,15 @@
 </div>
 <div class="void_small"></div>
 @endif
-
+<script>
+    let search = '<?=isset($_GET['search'])?>';
+    if (document.getElementsByClassName('track_line').length == 0 && search == '1') {
+        let div = document.createElement('div');
+  div.classList.add('void_small');
+  div.setAttribute('style', 'justify-self:center;');
+  div.innerHTML = `Нет друзей`;
+  document.getElementById('sfs').after(div);
+    }
+   
+</script>
 @endsection
