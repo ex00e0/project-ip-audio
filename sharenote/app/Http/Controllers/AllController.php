@@ -8,13 +8,33 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Track;
+use App\Models\Save;
+use App\Models\Message;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AllController extends Controller
 {
     public function index ($page = null) {
-        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
+        if (Auth::id() != null) {
+            $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get()->count();
+            if ($count < 12) {
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get();
+            }
+            else {
+                // dd($page);
+                if ($page == null) {
+                    $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->take(12)->get();
+                }
+                else {
+                    
+                    $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
+                    // dd($tracks);
+                }
+            }
+        }
+        else {
+            $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
         if ($count < 12) {
             $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get();
         }
@@ -29,24 +49,34 @@ class AllController extends Controller
                 // dd($tracks);
             }
         }
+        }
         $data =  ['data'=>$tracks,
     'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
         return view('index', $data);
     }
     public function sfs (Request $request) {
-       
-        $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id');
+        if (Auth::id() != null) {
+            $data = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer');
+        }
+        else {
+            $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id');
+        }
         if ($request->search != null && $request->search != '') {
            $data = $data->where('tracks.name', 'LIKE', '%'.$request->search.'%');
         }
         if ($request->filter != null && $request->filter != '') {
             $data = $data->where('tracks.performer_id', '=', $request->filter);
         }
+        if (Auth::id() != null) {
+        $data = $data->groupBy('tracks.id');
+    }
         if ($request->sort != null && $request->sort != '') {
             $data = $data->orderBy('created_at', $request->sort);
         }
         // dd($data);
+        
         $count = $data->latest()->get()->count();
+        
         // dd($data);
         if ($count <= 12) {
             $data = $data->latest()->get();
@@ -221,18 +251,18 @@ class AllController extends Controller
     }
 
     public function performer_panel ($page=null) {
-        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get()->count();
+        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(saves.id) as count_saves'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id', 'left outer')->where('tracks.performer_id',  Auth::id())->groupBy('tracks.id')->latest()->get()->count();
         if ($count <= 10) {
-            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->get();
+            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(saves.id) as count_saves'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id', 'left outer')->where('tracks.performer_id',  Auth::id())->groupBy('tracks.id')->latest()->get();
         }
         else {
             // dd($page);
             if ($page == null) {
-                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->take(10)->get();
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(saves.id) as count_saves'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id', 'left outer')->where('tracks.performer_id',  Auth::id())->groupBy('tracks.id')->latest()->take(10)->get();
             }
             else {
                 
-                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->where('tracks.performer_id',  Auth::id())->latest()->skip((intval($page)-1)*10)->take(10)->get();
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(saves.id) as count_saves'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id', 'left outer')->where('tracks.performer_id',  Auth::id())->groupBy('tracks.id')->latest()->skip((intval($page)-1)*10)->take(10)->get();
                 // dd($tracks);
             }
         }
@@ -479,5 +509,157 @@ class AllController extends Controller
         return redirect()->route('forget_pass')->withErrors(['email' => 'Такого пользователя нет']);
     }
 }
+    }
+
+    public function my_music ($page = null) {
+        $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id')->where('saves.user_id',  Auth::id())->latest()->get()->count();
+        if ($count < 12) {
+            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id')->where('saves.user_id',  Auth::id())->latest()->get();
+        }
+        else {
+            // dd($page);
+            if ($page == null) {
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id')->where('saves.user_id',  Auth::id())->latest()->take(12)->get();
+            }
+            else {
+                
+                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id')->where('saves.user_id',  Auth::id())->latest()->skip((intval($page)-1)*12)->take(12)->get();
+                // dd($tracks);
+            }
+        }
+        $data =  ['data'=>$tracks,
+    'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
+        return view('my_music', $data);
+    }
+
+    public function delete_from_saves ($id) {
+        DB::table('saves')->where('track_id', $id)->where('user_id', Auth::id())->delete();
+        return redirect()->back()->withErrors(['message' => 'Аудиозапись удалена из вашей музыки']);
+    }
+
+    public function add_to_saves ($id) {
+        Save::create([
+            'track_id'=>$id,
+            'user_id' => Auth::id(),
+        ]);
+        return redirect()->back()->withErrors(['message' => 'Аудиозапись добавлена в вашу музыку']);
+    }
+
+    public function sfs_my_music (Request $request) {
+       
+        $data =  DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id')->where('saves.user_id',  Auth::id());
+        if ($request->search != null && $request->search != '') {
+           $data = $data->where('tracks.name', 'LIKE', '%'.$request->search.'%');
+        }
+        if ($request->filter != null && $request->filter != '') {
+            $data = $data->where('tracks.performer_id', '=', $request->filter);
+        }
+        if ($request->sort != null && $request->sort != '') {
+            $data = $data->orderBy('created_at', $request->sort);
+        }
+        // dd($data);
+        $count = $data->latest()->get()->count();
+        // dd($data);
+        if ($count <= 12) {
+            $data = $data->latest()->get();
+        }
+        else {
+            if ($request->page == null) {
+                $data = $data->latest()->take(12)->get();
+            }
+            else {
+                $data = $data->latest()->skip((intval($request->page)-1)*12)->take(12)->get();
+                // dd($tracks);
+            }
+        }
+        // dd($data);
+        $data = ['data'=>$data, 'performers' => User::where('role', 'performer')->get(), 'count'=> $count, 'page'=> $request->page];
+        return view('my_music', $data);
+    }
+
+    public function messages () {
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        $users = User::get();
+        if ($friends != null) {
+            $friends = $friends->id;
+        }
+       
+        // $friends = get_object_vars($friends);
+        $messages = Message::where('from',  Auth::id())->orWhere('to', Auth::id())->get();
+        $data =  ['data'=>$messages, 'friends'=>$friends, 'users' => $users, 'id' => 'empty'];
+        return view('messages', $data);
+    }
+
+    public function messages_id ($id) {
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        $users = User::get();
+        if ($friends != null) {
+            $friends = $friends->id;
+        }
+        // $friends = get_object_vars($friends);
+        $messages = Message::where('from',  Auth::id())->orWhere('to', Auth::id())->get();
+        $data =  ['data'=>$messages, 'friends'=>$friends, 'users' => $users, 'id' => $id];
+        return view('messages', $data);
+    }
+
+    public function send_message (Request $request) {
+        $messages = Message::create([
+            "text" => $request->text,
+            "to" => $request->to,
+            "from" => Auth::id()
+        ]);
+        return redirect()->back();
+    }
+
+    public function friends ($page=null) {
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        $users = User::get();
+        if ($friends != null) {
+            $friends = $friends->id;
+            $count = count($friends);
+        if ($count > 10) {
+            if ($page == null) {
+                $friends = array_slice($friends, 0, 10);
+            }
+            else {
+                $friends = array_slice($friends, (intval($page)-1)*10, 10);
+
+            }
+        }
+        }
+        else {
+            $count = 0;
+        }
+        // $friends = get_object_vars($friends);
+        
+        
+        $data =  ['friends'=>$friends, 'users' => $users, 'count' => $count, 'page' => $page];
+        return view('friends', $data);
+    }
+
+    public function delete_friend ($id) {
+        $friends = User::where('id',  Auth::id())->get();
+        $friends = json_decode($friends[0]->friends);
+        $friends = $friends->id;
+        // $friends = get_object_vars($friends);
+        foreach ($friends as $key => $f) {
+            if ($f == $id) {
+                unset($friends[$key]);
+            }
+        }
+        if ($friends == []) {
+            $friends = null;
+        } else {
+            $friends = ['id' => array_values($friends)];
+            $friends = json_encode($friends);
+        }
+        // dd($friends);
+        User::where('id', Auth::id())->update([
+            'friends' => $friends,
+        ]);
+        return redirect()->back()->withErrors(['message' => 'Пользователь удален из ваших друзей']);
     }
 }

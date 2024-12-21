@@ -4,7 +4,7 @@
 
 
 @error('message')
-    <div class="alert alert-danger">{{ $message }}</div>
+    <script>alert("{{ $message }}");</script>
 @enderror
 
 
@@ -33,7 +33,20 @@
     <div class="c4 r1-3 track_length" id="dur_<?=$d->id?>"></div>
     <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}" onclick="play('<?=$d->file?>', '<?=$d->id?>')">
     <a href="{{asset('audio/'.$d->file)}}" download class="c7 r1-3"><img src="{{asset('images/download 2.svg')}}"></a>
-    <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}">
+    <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}" onclick="track_more('<?=$d->id?>')">
+    <div class="c4-all r3 track_more" id="track_more_<?=$d->id?>">
+        @if (isset($d->is_save))
+        @if ($d->is_save == 1)
+        <div><a href="{{route('delete_from_saves', $d->id)}}" style="color:inherit; text-decoration:none;">Удалить из "Моей музыки"</a></div>
+        @else
+        <div><a href="{{route('add_to_saves', $d->id)}}" style="color:inherit; text-decoration:none;">Добавить в "Мою музыку"</a></div>
+
+        @endif
+        @endif
+
+        <!-- <div class="void_small"></div>
+        <div><div>Удалить из "Моей музыки"</div></div> -->
+    </div>
 </div>
 <div class="void_small"></div>
 @endforeach
@@ -131,6 +144,26 @@
         };
         document.getElementById('empty_player').style.display = 'block';
        
+    }
+
+    function track_more (id) {
+        let x = window.getComputedStyle(document.getElementById(`track_more_${id}`)).display == 'none';
+        let arr = document.getElementsByClassName('track_more');
+        // console.log(arr);
+        for (key in arr) {
+            if (key == 'length') {
+                break;
+            }
+            document.getElementsByClassName('track_more')[key].style.display = 'none';
+        }
+        if (x) {
+             document.getElementById(`track_more_${id}`).style.display = 'grid';
+        }
+        else {
+            document.getElementById(`track_more_${id}`).style.display = 'none';
+        }
+       
+
     }
 </script>
 @endsection

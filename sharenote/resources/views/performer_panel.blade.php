@@ -28,6 +28,7 @@
     <div class="c1 r1-3 track_img"></div>
     <div class="c3 r1 track_name">{{$d->name}}</div>
     <div class="c3 r2 track_performer">{{$d->performer_name}}</div>
+    <div class="c3 r1-3 track_counts">Сохранили: {{$d->count_saves}}</div>
     <div class="c4 r1-3 track_length" id="dur_<?=$d->id?>"></div>
     <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}"  onclick="play('<?=$d->file?>', '<?=$d->id?>')">
     <a href="{{route('edit_track', $d->id)}}" class="c7 r1-3"><img src="{{asset('images/pencil 1.svg')}}"></a>

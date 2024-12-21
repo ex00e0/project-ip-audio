@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AllController;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,18 @@ Route::get('/sfs', [AllController::class, 'sfs'])->name('sfs');
 Route::get('/forget_pass', [AllController::class, 'forget_pass'])->name('forget_pass');
 Route::post('/forget_pass_db', [AllController::class, 'forget_pass_db'])->name('forget_pass_db');
 
+Route::get('/my_music', [AllController::class, 'my_music'])->name('my_music');
+Route::get('/my_music/{page}', [AllController::class, 'my_music'])->name('paginate_my_music');
+Route::get('/sfs_my_music', [AllController::class, 'sfs_my_music'])->name('sfs_my_music');
+Route::get('/delete_from_saves/{id}', [AllController::class, 'delete_from_saves'])->name('delete_from_saves');
+Route::get('/add_to_saves/{id}', [AllController::class, 'add_to_saves'])->name('add_to_saves');
+Route::get('/messages', [AllController::class, 'messages'])->name('messages');
+Route::get('/messages/{id}', [AllController::class, 'messages_id'])->name('messages_id');
+Route::post('/send_message', [AllController::class, 'send_message'])->name('send_message');
+Route::get('/friends', [AllController::class, 'friends'])->name('friends');
+Route::get('/friends/{page}', [AllController::class, 'friends'])->name('paginate_friends');
+Route::get('/sfs_friends', [AllController::class, 'sfs_friends'])->name('sfs_friends');
+Route::get('/delete_friend/{id}', [AllController::class, 'delete_friend'])->name('delete_friend');
 
 Route::group(['middleware' => ['auth', 'CheckIsPerformer']], function()
 {

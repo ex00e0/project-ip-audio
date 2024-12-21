@@ -8,7 +8,7 @@
 @enderror
 <div class="void"></div>
 <div class="create_row">
-    <button class="c2 r1 violet_button create_button"><a href="{{route('create_track')}}" style="text-decoration: none; color: white;">СОЗДАТЬ НОВЫЙ ТРЕК</a></button>
+    <!-- <button class="c2 r1 violet_button create_button"><a href="{{route('create_track')}}" style="text-decoration: none; color: white;">СОЗДАТЬ НОВЫЙ ТРЕК</a></button> -->
 </div>
 <form class="sfs" action="{{route('sfs_admin_panel')}}" method="get" id="sfs">
     <input name="search" type="text" placeholder="Введите название трека.." class="c2 r1" value="<?=(!isset($_GET['search']) || $_GET['search'] == '')?'':$_GET['search']?>">

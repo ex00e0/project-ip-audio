@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password', 255);
             $table->enum('role', ['admin', 'listener', 'performer']);
+            $table->json('friends', 255)->nullable();
             $table->timestamps();
         });
     }

@@ -19,29 +19,37 @@
         @else 
         <div><a href="{{route('/')}}" style="text-decoration: none; color: inherit;">Главная</a></div>
         @endif
-        <div>Популярное</div>
+        <!-- <div>Популярное</div> -->
         
         @auth
-        <div>Моя музыка</div>
+        @if (Route::current()->getName() == 'my_music' || Route::current()->getName() == 'sfs_my_music' || Route::current()->getName() == 'paginate_my_music')
+        <div class="current_page"><a href="{{route('my_music')}}" style="text-decoration: none; color: inherit;">Моя музыка</a></div>
+        @else 
+        <div><a href="{{route('my_music')}}" style="text-decoration: none; color: inherit;">Моя музыка</a></div>
+        @endif
         @if (Route::current()->getName() == 'show_lk')
         <div class="current_page"><a href="{{route('lk')}}" style="text-decoration: none; color: inherit;">Личный кабинет</a></div>
         @else 
         <div><a href="{{route('lk')}}" style="text-decoration: none; color: inherit;">Личный кабинет</a></div>
         @endif
         @if (Auth::user()->role == 'admin')
-        @if (Route::current()->getName() == 'admin_panel' || Route::current()->getName() == 'sfs_admin_panel')
+        @if (Route::current()->getName() == 'admin_panel' || Route::current()->getName() == 'sfs_admin_panel' || Route::current()->getName() == 'paginate_admin_panel')
         <div class="current_page"><a href="{{route('admin_panel')}}" style="text-decoration: none; color: inherit;">Панель администратора</a></div>
         @else
         <div><a href="{{route('admin_panel')}}" style="text-decoration: none; color: inherit;">Панель администратора</a></div>
         @endif
         @elseif ( Auth::user()->role == 'performer')
-        @if (Route::current()->getName() == 'performer_panel' || Route::current()->getName() == 'sfs_performer_panel')
+        @if (Route::current()->getName() == 'performer_panel' || Route::current()->getName() == 'sfs_performer_panel' || Route::current()->getName() == 'paginate_performer_panel')
         <div class="current_page"><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
         @else
         <div><a href="{{route('performer_panel')}}" style="text-decoration: none; color: inherit;">Панель исполнителя</a></div>
         @endif
         @endif
-       
+        @if (Route::current()->getName() == 'messages')
+        <div class="current_page"><a href="{{route('messages')}}" style="text-decoration: none; color: inherit;">Сообщения</a></div>
+        @else 
+        <div><a href="{{route('messages')}}" style="text-decoration: none; color: inherit;">Сообщения</a></div>
+        @endif
         @endauth
         
         
