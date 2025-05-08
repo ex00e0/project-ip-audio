@@ -7,111 +7,45 @@
     <script>alert("{{ $message }}");</script>
 @enderror
 
-
-<form class="sfs" action="{{route('sfs')}}" method="get" id="sfs">
-    <input name="search" type="text" placeholder="Введите название трека.." class="c2 r1" value="<?=(!isset($_GET['search']) || $_GET['search'] == '')?'':$_GET['search']?>">
-    <select name="filter" class="c4 r1">
-        <option value="" <?=(isset($_GET['filter']) && $_GET['filter'] == '')?'selected':''?>>-фильтрация по исполнителям-</option>
-        @foreach ($performers as $p) 
-        <option value="{{$p->id}}" <?=(isset($_GET['filter']) && $_GET['filter'] == $p->id)?'selected':''?>>{{$p->name}}</option>
-        @endforeach
-    </select>
-    <select name="sort" class="c6 r1">
-        <option value="" <?=(isset($_GET['sort']) && $_GET['sort'] == '')?'selected':''?>>-сортировка-</option>
-        <option value="DESC" <?=(isset($_GET['sort']) && $_GET['sort'] == 'DESC')?'selected':''?>>сначала новые</option>
-        <option value="ASC" <?=(isset($_GET['sort']) && $_GET['sort'] == 'ASC')?'selected':''?>>сначала старые</option>
-    </select>
-    <input type="hidden" value="<?=($count >= 12 ? $page : null)?>" name="page" id="page_move">
-    <input type="submit" value="ИСКАТЬ" class="c8 r1 violet_button">
-</form>
-@if ($count != 0) 
-@foreach ($data as $d) 
-<div class="track_line">
-    <div class="c1 r1-3 track_img"></div>
-    <div class="c3 r1 track_name">{{$d->name}}</div>
-    <div class="c3 r2 track_performer">{{$d->performer_name}}</div>
-    <div class="c4 r1-3 track_length" id="dur_<?=$d->id?>"></div>
-    <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}" onclick="play('<?=$d->file?>', '<?=$d->id?>')">
-    <a href="{{asset('audio/'.$d->file)}}" download class="c7 r1-3"><img src="{{asset('images/download 2.svg')}}"></a>
-    <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}" onclick="track_more('<?=$d->id?>')">
-    <div class="c4-all r3 track_more" id="track_more_<?=$d->id?>">
-        @if (isset($d->is_save))
-        @if ($d->is_save == 1)
-        <div><a href="{{route('delete_from_saves', $d->id)}}" style="color:inherit; text-decoration:none;">Удалить из "Моей музыки"</a></div>
-        @else
-        <div><a href="{{route('add_to_saves', $d->id)}}" style="color:inherit; text-decoration:none;">Добавить в "Мою музыку"</a></div>
-
-        @endif
-        @endif
-
-        <!-- <div class="void_small"></div>
-        <div><div>Удалить из "Моей музыки"</div></div> -->
+<div class="main1">
+    <div class="main1_text c2 r1"><span class="text_in_text">Найдите свою музыку и друзей с </span><span class="share logo_in_text">Share</span><span class="note logo_in_text">Note</span></div>
+    <div class="main1_desc c2 r2">
+        <div>
+            <img src="{{asset('images/star 3.svg')}}">
+            <div>Слушайте множество треков с разными жанрами</div>
+        </div>
+        <div>
+            <img src="{{asset('images/star 3.svg')}}">
+            <div>Следите за новинками от исполнителей</div>
+        </div>
+        <div>
+            <img src="{{asset('images/star 3.svg')}}">
+            <div>Делитесь треками с друзьями</div>
+        </div>
+        <div>
+            <img src="{{asset('images/star 3.svg')}}">
+            <div>Смотрите, что сейчас слушают другие</div>
+        </div>
     </div>
 </div>
-<div class="void_small"></div>
-@endforeach
 
-@else
-<div class="void_small" style="justify-self:center;">Нет таких треков</div>
-@endif
-<!-- 
-<div class="track_line">
-    <div class="c1 r1-3 track_img"></div>
-    <div class="c3 r1 track_name">Название трека</div>
-    <div class="c3 r2 track_performer">Исполнитель</div>
-    <div class="c4 r1-3 track_length">00:00</div>
-    <img class="c5 r1-3 play_img" src="{{asset('images/Polygon 4.svg')}}">
-    <img class="c7 r1-3" src="{{asset('images/download 2.svg')}}">
-    <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}">
-</div> -->
+<div class="main2">
+    <div class="main2_headline c2 r1">Новые альбомы</div>
+    <div class="main2_desc c2 r2">Еще точно не слышали</div>
+    <div class="main2_albums c2 r3">
+        @foreach ($data as $d)
+        <div>
+            <img src="{{asset('images/albums/'.$d->img)}}" class="main2_img">
+            <div class="main2_name">{{$d->name}}</div>
+        </div>
+        @endforeach
+    </div>
+</div>
+<div class="void"></div>
+
 <div id="empty_px"></div>
 
-@if ($count > 12)
-<div class="pagination_block" id="pagination_block">
-    <div></div>
-    <div class="numbers_block">
-        @php
-        $amount = ceil($count/12);
-        @endphp
-        @for ($i=1;$i<=$amount;$i++)
-            @if ($page != null && $i == $page)
-            <?php
-            if (isset($_GET['sort']) || isset($_GET['search']) || isset($_GET['filter'])) {
-            ?>
-            <div class="r1 current_page" style="font-size: 1.1vmax;"><a onclick="document.getElementById(`page_move`).value=`$i`;  document.getElementById(`sfs`).submit();" style="text-decoration:none; color: inherit;">{{$i}}</a></div>
 
-            <?php
-            } else {
-            ?>
-            <div class="r1 current_page" style="font-size: 1.1vmax;"><a href="{{route('paginate', $i)}}" style="text-decoration:none; color: inherit;">{{$i}}</a></div>
-
-            <?php
-            }
-            ?>
-            @else
-            <?php
-            if (isset($_GET['sort']) || isset($_GET['search']) || isset($_GET['filter'])) {
-            ?>
-            <div class="r1"><a onclick="document.getElementById(`page_move`).value=`{{$i}}`;  document.getElementById(`sfs`).submit();" style="text-decoration:none; color: inherit;">{{$i}}</a></div>
-
-            <?php
-            } else {
-            ?>
-            <div class="r1"><a href="{{route('paginate', $i)}}" style="text-decoration:none; color: inherit;">{{$i}}</a></div>
-
-            <?php
-            }
-            ?>
-            @endif
-        @endfor
-        
-        
-        <!-- <div class="r1"><a href="{{route('paginate', 2)}}" style="text-decoration:none; color: inherit;">2</a></div> -->
-    </div>
-    <div></div>
-</div>
-<div class="void_small"></div>
-@endif
 
 <div id="audio-player" style="position:fixed; width:100%; display:none;">
        

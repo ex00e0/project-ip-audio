@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AllController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\TelegramController;
+use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Keyboard\Keyboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +70,94 @@ Route::get('/delete_track_admin/{id}', [AllController::class, 'delete_track_admi
 
 });
 
-
 Route::get('/player', function () {
     return view('player');
 });
+
+Route::get('/popular', [AllController::class, 'popular'])->name('popular');
+Route::get('/performers', [AllController::class, 'performers'])->name('performers');
+
+Route::get('/count_l_track', [AllController::class, 'count_l_track'])->name('/count_l_track');
+
+Route::post('/search_posts_text', [AllController::class, 'search_posts_text'])->name('search_posts_text');
+Route::post('/like_post', [AllController::class, 'like_post'])->name('like_post');
+Route::post('/dislike_post', [AllController::class, 'dislike_post'])->name('dislike_post');
+
+// $http = Http::post(
+//     'https://api.telegram.org/bot7513404240:AAGmtvRxN9ZJ0sYYrUed8zRg_9zxrJwGjH0/setWebhook', [
+//         'url' =>  'https://emmaniasya.rf.gd/api/webhook',
+//     ],
+// );
+
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
+
+
+Route::get('/send-message', function () {
+    $chatId = '1577414155'; // Replace with your chat ID
+    $message = 'Hello, this is a message from Laravel!';
+    
+    Telegram::sendMessage([
+    'chat_id' => $chatId,
+    'text' => $message,
+    ]);
+    
+    return 'Message sent to Telegram!';
+    });
+
+
+    // Route::get('/get-updates', function () {
+    //     $updates = Telegram::getUpdates();
+    //     $count = count($updates) - 1;
+    //     $update_count = $updates[$count];
+    //     $update_count = $update_count->chat_id;
+    //     if (isset($updates['text'])) {
+    //         $text = $updates['text'];
+
+    //         if ($text === '/start') {
+    //             $reply_markup = Keyboard::make()
+    //                 ->setResizeKeyboard(true)
+    //                 ->setOneTimeKeyboard(true)
+    //                 ->row([
+    //                 Keyboard::button('1'),
+    //                 Keyboard::button('2'),
+    //                 Keyboard::button('3'),
+    //                 ])
+    //                 ->row([
+    //                 Keyboard::button('4'),
+    //                 Keyboard::button('5'),
+    //                 Keyboard::button('6'),
+    //                 ])
+    //                 ->row([
+    //                 Keyboard::button('7'),
+    //                 Keyboard::button('8'),
+    //                 Keyboard::button('9'),
+    //                 ])
+    //                 ->row([
+    //                 Keyboard::button('0'),
+    //                 ]);
+
+    //             $response = Telegram::sendMessage([
+    //             'chat_id' => '1577414155',
+    //             'text' => 'Hello World',
+    //             'reply_markup' => $reply_markup
+    //             ]);
+               
+
+    //         }
+    //         //  elseif ($text === 'Новинки') {
+    //         //     $this->sendLatestTracks($chatId);
+    //         // } elseif ($text === 'Найти трек') {
+    //         //     $this->sendMessage($chatId, 'Введите название трека:');
+    //         // } else {
+    //         //     $this->searchTrack($chatId, $text);
+    //         // }
+    //     }
+    //     return $updates;
+    //     });
+
+
+    Route::post('/telegram-webhook', function () {
+        Telegram::commandsHandler(true);
+        return 'ok';
+    });
+    

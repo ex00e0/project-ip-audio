@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => 'v10.0.0',
-        'version' => '10.0.0.0',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
         'reference' => NULL,
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -364,6 +364,15 @@
                 0 => 'v10.48.25',
             ),
         ),
+        'irazasyed/telegram-bot-sdk' => array(
+            'pretty_version' => 'v3.15.0',
+            'version' => '3.15.0.0',
+            'reference' => '07146018d173dedfd520fb8f18a50f31e27b1e60',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../irazasyed/telegram-bot-sdk',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'kodova/hamcrest-php' => array(
             'dev_requirement' => true,
             'replaced' => array(
@@ -380,8 +389,8 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'v10.0.0',
-            'version' => '10.0.0.0',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
             'reference' => NULL,
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
@@ -457,6 +466,15 @@
             'reference' => '754b3604fb2984c71f4af4a9cbe7b57f346ec1f3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../league/config',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'league/event' => array(
+            'pretty_version' => '3.0.3',
+            'version' => '3.0.3.0',
+            'reference' => 'ec38ff7ea10cad7d99a79ac937fbcffb9334c210',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/event',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -757,8 +775,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0|3.0',
-                1 => '3.0.0',
+                0 => '3.0.0',
+                1 => '1.0|2.0|3.0',
             ),
         ),
         'psr/simple-cache' => array(

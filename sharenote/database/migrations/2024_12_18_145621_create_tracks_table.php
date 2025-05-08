@@ -17,6 +17,10 @@ return new class extends Migration
             $table->unsignedBigInteger('performer_id');
             $table->foreign('performer_id')->references('id')->on('users');
             $table->string('file', 255);
+            $table->unsignedBigInteger('album_id');
+            $table->foreign('album_id')->references('id')->on('albums');
+            $table->enum('genre', ['классика', 'джаз', 'рок', 'поп', 'хип-хоп', 'электронная музыка', 'другое']);
+            $table->integer('count_l')->default(0);
             $table->timestamps();
         });
     }

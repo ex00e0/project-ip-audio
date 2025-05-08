@@ -11,5 +11,8 @@ class Track extends Model
         'name',
         'file',
         'performer_id',
+        'album_id',
+        'genre',
+        'count_l'
     ];
 }

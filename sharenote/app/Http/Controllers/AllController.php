@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
+use App\Models\Liked_post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Post;
 use App\Models\Track;
 use App\Models\Save;
 use App\Models\Message;
@@ -16,42 +19,43 @@ use Illuminate\Support\Facades\Validator;
 class AllController extends Controller
 {
     public function index ($page = null) {
-        if (Auth::id() != null) {
-            $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get()->count();
-            if ($count < 12) {
-                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get();
-            }
-            else {
-                // dd($page);
-                if ($page == null) {
-                    $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->take(12)->get();
-                }
-                else {
+    //     if (Auth::id() != null) {
+    //         $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get()->count();
+    //         if ($count < 12) {
+    //             $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->get();
+    //         }
+    //         else {
+    //             // dd($page);
+    //             if ($page == null) {
+    //                 $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->take(12)->get();
+    //             }
+    //             else {
                     
-                    $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
-                    // dd($tracks);
-                }
-            }
-        }
-        else {
-            $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
-        if ($count < 12) {
-            $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get();
-        }
-        else {
-            // dd($page);
-            if ($page == null) {
-                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->take(12)->get();
-            }
-            else {
+    //                 $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'))->join('users', 'tracks.performer_id', '=', 'users.id')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->groupBy('tracks.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
+    //                 // dd($tracks);
+    //             }
+    //         }
+    //     }
+    //     else {
+    //         $count = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get()->count();
+    //     if ($count < 12) {
+    //         $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->get();
+    //     }
+    //     else {
+    //         // dd($page);
+    //         if ($page == null) {
+    //             $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->take(12)->get();
+    //         }
+    //         else {
                 
-                $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
-                // dd($tracks);
-            }
-        }
-        }
-        $data =  ['data'=>$tracks,
-    'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
+    //             $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->latest()->skip((intval($page)-1)*12)->take(12)->get();
+    //             // dd($tracks);
+    //         }
+    //     }
+    //     }
+    //     $data =  ['data'=>$tracks,
+    // 'performers' => User::where('role', 'performer')->get(), 'count' => $count, 'page' => $page];
+        $data = ['data' => Album::latest()->limit(10)->get()];
         return view('index', $data);
     }
     public function sfs (Request $request) {
@@ -102,6 +106,69 @@ class AllController extends Controller
         return view('reg');
     }
 
+    public function popular () {
+        $tracks = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->orderBy('count_l', 'DESC')->limit(10)->get();
+        $albums = Album::orderBy('count_l', 'DESC')->limit(10)->get();
+        $data = ['data' => $tracks, 'albums' => $albums];
+        return view('popular', $data);
+    }
+
+    public function performers () {
+        if (Auth::id() != null) {
+            $posts = DB::table('posts')->select('posts.*', 'tracks.name', 'tracks.file', 'users.name as performer_name', 'users.img as performer_img', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'), DB::raw('count(CASE WHEN liked_posts.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_liked'))->join('tracks', 'tracks.id', '=', 'posts.track_id', 'left outer')->join('users', 'posts.performer_id', '=', 'users.id', 'left outer')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->join('liked_posts', 'liked_posts.post_id', '=', 'posts.id', 'left outer')->groupBy('posts.id')->latest()->get();
+
+        }
+        else {
+            $posts = DB::table('posts')->select('posts.*', 'tracks.name', 'tracks.file', 'users.name as performer_name', 'users.img as performer_img')->join('tracks', 'tracks.id', '=', 'posts.track_id', 'left outer')->join('users', 'posts.performer_id', '=', 'users.id', 'left outer')->latest()->get();
+
+        }
+        // $track = DB::table('tracks')->select('tracks.*', 'users.name as performer_name')->join('users', 'tracks.performer_id', '=', 'users.id')->orderBy('count_l', 'DESC')->limit(10)->get();
+        $posts = ['posts' => $posts];
+        return view('performers', $posts);
+    }
+
+    public function search_posts_text (Request $request) {
+        if (Auth::id() != null) {
+            $posts = DB::table('posts')->select('posts.*', 'tracks.name', 'tracks.file', 'users.name as performer_name', 'users.img as performer_img', DB::raw('count(CASE WHEN saves.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_save'), DB::raw('count(CASE WHEN liked_posts.user_id = '. Auth::id() .' THEN 1 ELSE NULL END) as is_liked'))->join('tracks', 'tracks.id', '=', 'posts.track_id', 'left outer')->join('users', 'posts.performer_id', '=', 'users.id', 'left outer')->join('saves', 'tracks.id', '=', 'saves.track_id','left outer')->join('liked_posts', 'liked_posts.post_id', '=', 'posts.id', 'left outer')->where('posts.text', 'LIKE', "%$request->text%")->groupBy('posts.id')->latest()->get();
+
+        }
+        else {
+            $posts = DB::table('posts')->select('posts.*', 'tracks.name', 'tracks.file', 'users.name as performer_name', 'users.img as performer_img')->join('tracks', 'tracks.id', '=', 'posts.track_id', 'left outer')->join('users', 'posts.performer_id', '=', 'users.id', 'left outer')->where('posts.text', 'LIKE', "%$request->text%")->latest()->get();
+
+        }
+        $posts = ['posts' => $posts];
+        return response()->json($posts);
+    }
+
+    public function like_post (Request $request) {
+        $post = Post::where('id', $request->id)->get();
+        $isset = Liked_post::where('user_id', Auth::id())->where('post_id', $request->id)->get()->count();
+        if ($isset == 0) {
+            $likes = $post[0]->likes + 1;
+            Post::where('id', $request->id)->update(['likes' => $likes]);
+            Liked_post::create(['user_id' => Auth::id(), 'post_id' => $request->id]);
+            return response()->json($likes);
+        }
+        else {
+            return response()->json('stop');
+        }
+        
+    }
+
+    public function dislike_post (Request $request) {
+        $post = Post::where('id', $request->id)->get();
+        $isset = Liked_post::where('user_id', Auth::id())->where('post_id', $request->id)->get()->count();
+        if ($isset == 1) {
+            $likes = $post[0]->likes - 1;
+            Post::where('id', $request->id)->update(['likes' => $likes]);
+            Liked_post::where('user_id', Auth::id())->where('post_id', $request->id)->delete();
+            return response()->json($likes);
+        }
+        else {
+            return response()->json('stop');
+        }
+        
+    }
 
     public function reg (Request $request) {
         // var_dump($request->role);
@@ -743,5 +810,14 @@ class AllController extends Controller
         return view('search_friends', $data);
     }
 
-
+    public function count_l_track (Request $request) {
+      
+        $track = Track::where('id', $request->id)->get();
+        $count = $track[0]->count_l + 1;
+        Track::where('id', $request->id)->update(['count_l' => $count]);
+        $album = Album::where('id', $track[0]->album_id)->get();
+        $count_album = $album[0]->count_l + 1;
+        Album::where('id', $album[0]->id)->update(['count_l' => $count_album]);
+        return 'Прослушивание засчитано';
+    }
 }

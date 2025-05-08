@@ -7,19 +7,36 @@
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
 
 <nav>
     <img src="{{asset('images/logo.svg')}}" class="c2 r1">
-    <div class="logo_text c4 r1"><span style="color:black;">Share</span><span style="color:#764FAF;">Note</span></div>
+    <div class="logo_text c4 r1"><span class="share">Share</span><span class="note">Note</span></div>
+    @auth
     <div class="c1-all r1 navigation">
+    @endauth
+    @guest 
+    <div class="c1-all r1 navigation_guest">
+    @endguest
         @if (Route::current()->getName() == 'sfs' || Route::current()->getName() == '/' || Route::current()->getName() == 'paginate')
         <div class="current_page"><a href="{{route('/')}}" style="text-decoration: none; color: inherit;">Главная</a></div>
         @else 
         <div><a href="{{route('/')}}" style="text-decoration: none; color: inherit;">Главная</a></div>
         @endif
-        <!-- <div>Популярное</div> -->
+
+        @if (Route::current()->getName() == 'popular')
+        <div class="current_page"><a href="{{route('popular')}}" style="text-decoration: none; color: inherit;">Популярное</a></div>
+        @else 
+        <div><a href="{{route('popular')}}" style="text-decoration: none; color: inherit;">Популярное</a></div>
+        @endif
+
+        @if (Route::current()->getName() == 'performers')
+        <div class="current_page"><a href="{{route('performers')}}" style="text-decoration: none; color: inherit;">Исполнители</a></div>
+        @else 
+        <div><a href="{{route('performers')}}" style="text-decoration: none; color: inherit;">Исполнители</a></div>
+        @endif
         
         @auth
         @if (Route::current()->getName() == 'my_music' || Route::current()->getName() == 'sfs_my_music' || Route::current()->getName() == 'paginate_my_music')
@@ -72,7 +89,7 @@
     <img src="{{asset('images/logo.svg')}}" class="c3 r1">
     <div class="logo_text_footer c4 r1"><span style="color:black;">Share</span><span style="color:#764FAF;">Note</span></div>
 </footer>
-<div id="empty_player" style="display:none; height:3vmax;"></div>
+<div id="empty_player" style="display:none; height:5vmax;"></div>
 <script>
     // alert();
     if (document.body.scrollHeight < document.documentElement.clientHeight) {

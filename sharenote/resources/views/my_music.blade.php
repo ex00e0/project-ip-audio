@@ -57,7 +57,6 @@
     <img class="c9 r1-3" src="{{asset('images/Group 10.svg')}}">
 </div> -->
 <div id="empty_px"></div>
-
 @if ($count > 12)
 <div class="pagination_block" id="pagination_block">
     <div></div>
@@ -109,6 +108,12 @@
        
     </div>
 <script>
+     $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('wrapper')
+            }
+        });
+
     function play (name, id) {
         // console.log( document.getElementById('play_name'));
         let audio = document.createElement('audio');
@@ -135,6 +140,16 @@
         document.getElementById(`dur_${id}`).innerHTML = dur;
         };
         document.getElementById('empty_player').style.display = 'block';
+        document.getElementById('audio-player').style.bottom = '0vmax';
+        
+            $.ajax({
+            url: '/count_l_track',    
+            method: 'get',            
+            dataType: 'html',          
+            data: {id: id},    
+            success: function(data){   
+            alert('ок');
+            } });
        
     }
     function track_more (id) {
